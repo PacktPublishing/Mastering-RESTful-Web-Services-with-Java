@@ -59,7 +59,7 @@ public class ProductsApiController implements ProductsApi {
                 .body(productMapper.toProductOutput(product));
     }
 
-    @GetMapping(value = "{productId}")
+    @GetMapping(value = "/{productId}")
     @Override
     public ResponseEntity<ProductOutput> getProductById(@PathVariable("productId") @ValidSku String productId) {
         final var product = productsQueryUseCase.getProductById(productId);

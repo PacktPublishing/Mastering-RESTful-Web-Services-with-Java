@@ -31,7 +31,7 @@ build/
 database/database.mv.db
 database/database.lock.db
 database/database.trace.db
-
+**/database/**
 ### Mac ###
 
 *.DS_Store
