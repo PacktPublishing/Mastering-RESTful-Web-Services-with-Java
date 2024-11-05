@@ -28,10 +28,7 @@ build/
 ### VS Code ###
 .vscode/
 
-database/database.mv.db
-database/database.lock.db
-database/database.trace.db
-**/database/**
+**/database/database*.db
 ### Mac ###
 
 *.DS_Store
