@@ -1,0 +1,8 @@
+PUT http://localhost:8080/api/products/AK21101
+Content-Type: application/json
+
+{
+  "name": "Keyboard",
+  "description": "Ergonomic Keyboard",
+  "price": 60
+}

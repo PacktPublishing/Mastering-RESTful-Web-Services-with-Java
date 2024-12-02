@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: order-management-api
+  datasource:
+    url: jdbc:h2:file:./database/database-order;AUTO_SERVER=TRUE
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+
+    hikari:
+#      maximum-pool-size: 500
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+  h2:
+    console.enabled: true
+  threads:
+    virtual:
+#      enabled: true
+
+application:
+  version: @project.version@
+
+server.port: 8090
