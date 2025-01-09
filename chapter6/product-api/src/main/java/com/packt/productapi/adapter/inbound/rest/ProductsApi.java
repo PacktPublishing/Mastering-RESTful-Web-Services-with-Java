@@ -168,6 +168,23 @@ public interface ProductsApi {
                                                             """
                                             )
                                     })),
+                    @ApiResponse(responseCode = "408", description = "Request Timeout",
+                            content = @Content(schema = @Schema(implementation = ProblemDetail.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Timeout Error",
+                                                    summary = "Example of timeout error",
+                                                    value = """
+                                                            {
+                                                              "type": "about:blank",
+                                                              "title": "Request Timeout",
+                                                              "status": 408,
+                                                              "detail": "The server timed out waiting for the request.",
+                                                              "instance": "/api/products/AK21109"
+                                                            }
+                                                            """
+                                            )
+                                    })),
             }
     )
     ResponseEntity<ProductOutput> getProductById(

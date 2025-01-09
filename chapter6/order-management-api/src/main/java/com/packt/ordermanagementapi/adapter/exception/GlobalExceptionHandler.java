@@ -1,12 +1,16 @@
-package com.packt.productapi.adapter.exception;
+package com.packt.ordermanagementapi.adapter.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import org.hibernate.validator.internal.engine.path.PathImpl;
+import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -15,27 +19,26 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.ProblemDetail.forStatusAndDetail;
-
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
-    @ExceptionHandler(ProductTimeoutException.class)
-    public ResponseEntity<Object> handleNotFound(ProductTimeoutException exception, WebRequest request) {
-        ProblemDetail problemDetail = forStatusAndDetail(HttpStatus.REQUEST_TIMEOUT, exception.getMessage());
-        return this.handleExceptionInternal(exception, problemDetail, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
-    }
-
-    @ExceptionHandler(UnexpectedServerError.class)
-    public ResponseEntity<Object> handleUnexpectedServerError(EntityNotFoundException exception, WebRequest request) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
-        return this.handleExceptionInternal(exception, problemDetail, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
-    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleNotFound(EntityNotFoundException exception, WebRequest request) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
         return this.handleExceptionInternal(exception, problemDetail, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(ResourceAccessException.class)
+    public ResponseEntity<Object> handleClientTimeOut(ResourceAccessException exception, WebRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, exception.getMessage());
+        return this.handleExceptionInternal(exception, problemDetail, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity<Object> handleHttpClientErrorException(HttpClientErrorException exception, WebRequest request) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(exception.getStatusCode(), exception.getResponseBodyAsString());
+        return this.handleExceptionInternal(exception, problemDetail, exception.getResponseHeaders(), exception.getStatusCode(), request);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -47,6 +50,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Invalid request content.");
         problemDetail.setProperty("errors", errors);
         return this.handleExceptionInternal(ex, problemDetail, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatusCode status,
+                                                                  WebRequest request) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, "Invalid request content.");
+        problemDetail.setProperty("errors", List.of(ex.getLocalizedMessage()));
+        return this.handleExceptionInternal(ex, problemDetail, headers, status, request);
     }
 
     @Override

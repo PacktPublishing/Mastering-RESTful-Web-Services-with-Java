@@ -1,4 +1,4 @@
-package com.packt.productapi.usecase;
+package com.packt.productapi;
 
 import com.packt.productapi.domain.Product;
 import com.packt.productapi.domain.ProductPhoto;

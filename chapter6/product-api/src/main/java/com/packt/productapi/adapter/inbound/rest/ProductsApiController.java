@@ -1,6 +1,7 @@
 package com.packt.productapi.adapter.inbound.rest;
 
 
+import com.packt.productapi.adapter.exception.ProductTimeoutException;
 import com.packt.productapi.adapter.exception.UnexpectedServerError;
 import com.packt.productapi.adapter.inbound.rest.configuration.ValidSku;
 import com.packt.productapi.adapter.inbound.rest.dto.PaginatedProducts;
@@ -16,12 +17,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/products")
@@ -71,9 +72,15 @@ public class ProductsApiController implements ProductsApi {
     @GetMapping(value = "/{productId}")
     @Override
     public ResponseEntity<ProductOutput> getProductById(@PathVariable("productId") @ValidSku String productId) {
-        final var product = productsQueryUseCase.getProductById(productId);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(productMapper.toProductOutput(product));
+        try {
+            final var product = productsQueryUseCase.getProductByIdAsync(productId).get();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(productMapper.toProductOutput(product));
+        } catch (InterruptedException ex) {
+            throw new UnexpectedServerError("Error to access the product.", ex);
+        } catch (ExecutionException ex) {
+            throw new ProductTimeoutException("Timeout trying to retrieve the product id : %s".formatted(productId), ex);
+        }
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
