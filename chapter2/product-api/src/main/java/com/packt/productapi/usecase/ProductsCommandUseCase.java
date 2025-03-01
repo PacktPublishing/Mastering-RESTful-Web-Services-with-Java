@@ -1,7 +1,7 @@
 package com.packt.productapi.usecase;
 
 
-import com.packt.productapi.domain.Product;
+import com.packt.productapi.adapter.outbound.database.entity.Product;
 import com.packt.productapi.usecase.dto.CreatedProduct;
 
 public interface ProductsCommandUseCase {

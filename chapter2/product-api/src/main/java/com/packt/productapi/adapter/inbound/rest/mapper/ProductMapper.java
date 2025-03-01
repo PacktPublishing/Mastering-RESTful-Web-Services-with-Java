@@ -1,7 +1,7 @@
 package com.packt.productapi.adapter.inbound.rest.mapper;
 
 import com.packt.productapi.adapter.inbound.rest.dto.ProductOutput;
-import com.packt.productapi.domain.Product;
+import com.packt.productapi.adapter.outbound.database.entity.Product;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
