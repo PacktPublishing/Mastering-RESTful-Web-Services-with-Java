@@ -1,0 +1,612 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Product Catalogue API",
+    "description": "API for managing product catalog",
+    "version": "0.0.1-SNAPSHOT"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "products",
+      "description": "the products API"
+    }
+  ],
+  "paths": {
+    "/api/products/{productId}": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Retrieve a product by ID",
+        "operationId": "getProductById",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "ID of the product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "AK21109"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductOutput"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "Validation Error": {
+                    "summary": "Example of validation error",
+                    "description": "Validation Error",
+                    "value": {
+                      "type": "about:blank",
+                      "title": "Bad Request",
+                      "status": 400,
+                      "detail": "Invalid request content.",
+                      "instance": "/api/products/AK21109",
+                      "errors": [
+                        "productId: SKU must follow the pattern AA99999"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "Not found Error": {
+                    "summary": "Example of not found error",
+                    "description": "Not found Error",
+                    "value": {
+                      "type": "about:blank",
+                      "title": "Not Found",
+                      "status": 404,
+                      "detail": "Product not found with id AK21102",
+                      "instance": "/api/products/AK21102"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Create or update a product",
+        "operationId": "createProduct",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "ID of the product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "AK21109"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductOutput"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Product created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductOutput"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "Validation Error": {
+                    "summary": "Example of validation error",
+                    "description": "Validation Error",
+                    "value": {
+                      "type": "about:blank",
+                      "title": "Bad Request",
+                      "status": 400,
+                      "detail": "Invalid request content.",
+                      "instance": "/api/products/AK21109",
+                      "errors": [
+                        "name: cannot be blank"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Logical remove a product by ID",
+        "operationId": "deleteProduct",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "ID of the product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "AK21109"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Product removed successfully"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Edit product information",
+        "operationId": "editProduct",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "ID of the product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "AK21109"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDescriptionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductOutput"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "Validation Error": {
+                    "summary": "Example of validation error",
+                    "description": "Validation Error",
+                    "value": {
+                      "type": "about:blank",
+                      "title": "Bad Request",
+                      "status": 400,
+                      "detail": "Invalid request content.",
+                      "instance": "/api/products/AK21109",
+                      "errors": [
+                        "productId: SKU must follow the pattern AA99999"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "Not found Error": {
+                    "summary": "Example of not found error",
+                    "description": "Not found Error",
+                    "value": {
+                      "type": "about:blank",
+                      "title": "Not Found",
+                      "status": 404,
+                      "detail": "Product not found with id AK21102",
+                      "instance": "/api/products/AK21102"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{productId}/photo": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Download a product photo",
+        "operationId": "downloadProductPhoto",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "ID of the product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "AK21109"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product photo found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "byte"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product or its photo not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Upload photo of the product",
+        "operationId": "uploadProductPhoto",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "ID of the product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "AK21109"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Upload successful",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "File too large",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Invalid file type",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Retrieve all products",
+        "operationId": "getProducts_1_1",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Number of current page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "example": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Size of elements per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "example": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of products",
+            "content": {
+              "application/vnd.packt-v2+json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaginatedProducts"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductOutput"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProductOutput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Keyboard"
+          },
+          "sku": {
+            "type": "string",
+            "description": "ID of the product",
+            "example": "AK21109"
+          },
+          "description": {
+            "type": "string",
+            "example": "Ergonomic Keyboard"
+          },
+          "price": {
+            "type": "number",
+            "example": 60
+          }
+        }
+      },
+      "ProblemDetail": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string",
+            "format": "uri"
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "ProductInput": {
+        "required": [
+          "description",
+          "name",
+          "price"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 3,
+            "type": "string",
+            "example": "Keyboard"
+          },
+          "description": {
+            "maxLength": 255,
+            "minLength": 10,
+            "type": "string",
+            "example": "Ergonomic Keyboard"
+          },
+          "price": {
+            "type": "number",
+            "example": 60
+          }
+        },
+        "description": "The product data"
+      },
+      "ProductDescriptionInput": {
+        "required": [
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "description": {
+            "maxLength": 255,
+            "minLength": 10,
+            "type": "string",
+            "example": "Ergonomic Keyboard 2.0"
+          }
+        },
+        "description": "Description of the product"
+      },
+      "PaginatedProducts": {
+        "type": "object",
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "example": 10
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductOutput"
+            }
+          }
+        }
+      }
+    }
+  }
+}

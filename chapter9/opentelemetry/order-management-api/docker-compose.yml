@@ -1,0 +1,9 @@
+services:
+  jaeger:
+    image: jaegertracing/jaeger:${JAEGER_VERSION:-latest}
+    container_name: jaeger
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - 4318:4318
+      - 16686:16686

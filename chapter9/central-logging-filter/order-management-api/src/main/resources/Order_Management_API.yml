@@ -1,0 +1,229 @@
+# This document is not used by the code, it just accompanies the book text explaining the structure of OpenAPI
+
+openapi: 3.0.0
+info:
+  title: Order Management API
+  description: API for managing orders
+  version: 1.0.0-SNAPSHOT
+servers:
+  - url: http://localhost:8090/api/v1
+paths:
+  /orders:
+    post:
+      tags:
+        - OrderManagement
+      summary: Create Order
+      description: Creates a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequestBody'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '400':
+          description: Bad Request
+    get:
+      tags:
+        - OrderManagement
+      summary: List Orders
+      description: Retrieves a list of orders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderResponse'
+  /orders/{orderId}:
+    get:
+      tags:
+        - OrderManagement
+      summary: Get Order
+      description: Retrieves a single order by its ID
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: The ID of the order to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - OrderManagement
+      summary: Update Order
+      description: Updates an existing order
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: The ID of the order to be updated
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequestBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - OrderManagement
+      summary: Cancel Order
+      description: Cancels an existing order
+      parameters:
+        - name: orderId
+          in: path
+          description: ID of the order to be cancelled
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+  /orders/{orderId}/status:
+    patch:
+      tags:
+        - OrderManagement
+      summary: Change Order Status
+      description: Change an Order Status
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: The ID of the order to be updated
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderStatus'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '404':
+          description: Not Found
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        productSKU:
+          type: string
+        quantity:
+          type: integer
+    Customer:
+      type: object
+      properties:
+        customerType:
+          type: string
+        streetAddress:
+          type: string
+        city:
+          type: string
+        postalCode:
+          type: string
+      discriminator:
+        propertyName: customerType
+        mapping:
+          person: '#/components/schemas/PersonCustomer'
+          company: '#/components/schemas/CompanyCustomer'
+    PersonCustomer:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Customer'
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+    CompanyCustomer:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Customer'
+      properties:
+        companyName:
+          type: string
+        vatId:
+          type: string
+    OrderRequestBody:
+      type: object
+      properties:
+        customer:
+          $ref: '#/components/schemas/Customer'
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    OrderResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        customer:
+          $ref: '#/components/schemas/Customer'
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        totalAmount:
+          type: number
+        orderCreatedDate:
+          type: string
+          format: date-time
+        orderUpdatedDate:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/Status'
+    OrderStatus:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+    Status:
+      type: string
+      enum: [ Pending, Approved, Cancelled ]
+  securitySchemes:
+    JWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - JWTAuth: []

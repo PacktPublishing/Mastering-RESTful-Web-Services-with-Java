@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: order-management-api
+  datasource:
+    url: jdbc:h2:file:./database/database-order;AUTO_SERVER=TRUE
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+  h2:
+    console.enabled: true
+
+application:
+  version: 0.0.1
+
+server.port: 8090
+
+management:
+  endpoints:
+    web:
+      exposure:
+        exclude: "*"
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+    zipkin:
+      enable: true
+      endpoint: http://localhost:9411/api/v2/spans
+  observations:
+    key-values:
+      application: 'order-management-api'
+
+logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
