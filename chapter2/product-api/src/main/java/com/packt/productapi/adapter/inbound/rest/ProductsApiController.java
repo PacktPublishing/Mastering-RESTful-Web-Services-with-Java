@@ -77,5 +77,4 @@ public class ProductsApiController implements ProductsApi {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(products);
     }
-
 }

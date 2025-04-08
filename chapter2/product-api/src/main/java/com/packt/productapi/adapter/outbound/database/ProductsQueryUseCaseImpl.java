@@ -1,7 +1,7 @@
 package com.packt.productapi.adapter.outbound.database;
 
 import com.packt.productapi.adapter.exception.EntityNotFoundException;
-import com.packt.productapi.domain.Product;
+import com.packt.productapi.adapter.outbound.database.entity.Product;
 import com.packt.productapi.usecase.ProductsQueryUseCase;
 import org.springframework.stereotype.Service;
 
